@@ -97,3 +97,25 @@ dialog::backdrop {
     gap: 10px;
     margin-top: 20px;
 }
+
+/* --- Book Card Styling --- */
+.book-card {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-left: 5px solid #4f46e5; /* Accent border matching your theme */
+}
+
+.book-card h3 {
+    font-size: 1.25rem;
+    color: #1f2937;
+}
+
+.book-card p {
+    color: #4b5563;
+    font-size: 0.95rem;
+}
