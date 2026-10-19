@@ -44,16 +44,23 @@ function displayBooks() {
         // Store the unique ID on the DOM element
         bookCard.dataset.id = book.id;
 
-        // Populate the card content, including a Remove button
+        // Populate the card content, including a Toggle Read button and Remove button
         bookCard.innerHTML = `
             <h3>${book.title}</h3>
             <p><strong>Author:</strong> ${book.author}</p>
             <p><strong>Pages:</strong> ${book.num_pages}</p>
-            <p><strong>Status:</strong> ${book.read ? "Read ✅" : "Not Read ❌"}</p>
+            <p class="read-status"><strong>Status:</strong> ${book.read ? "Read ✅" : "Not Read ❌"}</p>
+            <button class="toggle-read-btn btn">Toggle Read</button>
             <button class="remove-btn btn secondary-btn">Remove</button>
         `;
 
-        // Attach event listener directly to the remove button inside this card
+        // Attach event listener to the Toggle Read button
+        const toggleReadBtn = bookCard.querySelector(".toggle-read-btn");
+        toggleReadBtn.addEventListener("click", () => {
+            toggleReadStatus(book.id);
+        });
+
+        // Attach event listener to the Remove button
         const removeBtn = bookCard.querySelector(".remove-btn");
         removeBtn.addEventListener("click", () => {
             removeBookFromLibrary(book.id);
@@ -62,6 +69,19 @@ function displayBooks() {
         // Append the card into our main grid container
         libraryContainer.appendChild(bookCard);
     });
+}
+
+// Function to toggle a book's read status by its ID and re-render
+function toggleReadStatus(bookId) {
+    const book = myLibrary.find(book => book.id === bookId);
+    
+    if (book) {
+        // Flip the boolean value (true becomes false, false becomes true)
+        book.read = !book.read;
+        
+        // Re-render the display to show the updated status
+        displayBooks();
+    }
 }
 
 // Function to remove a book from the array by its ID and re-render
