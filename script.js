@@ -61,3 +61,42 @@ function displayBooks() {
 displayBooks();
 
 console.log(myLibrary);
+
+// --- Modal & Form Event Handling ---
+const dialog = document.querySelector("#book-dialog");
+const newBookBtn = document.querySelector("#new-book-btn");
+const cancelBtn = document.querySelector("#cancel-btn");
+const bookForm = document.querySelector("#book-form");
+
+// Open the dialog modal when clicking "Add Book"
+newBookBtn.addEventListener("click", () => {
+    dialog.showModal();
+});
+
+// Close the dialog and clear the form when clicking "Cancel"
+cancelBtn.addEventListener("click", () => {
+    dialog.close();
+    bookForm.reset();
+});
+
+// Handle form submission to add a new book
+bookForm.addEventListener("submit", (e) => {
+    // Prevent default form submission behavior (page reload)
+    e.preventDefault();
+
+    // Grab input values from the form
+    const title = document.querySelector("#title").value;
+    const author = document.querySelector("#author").value;
+    const num_pages = Number(document.querySelector("#num_pages").value);
+    const read = document.querySelector("#read").checked;
+
+    // Add the new book to your library array using your constructor function
+    addBookToLibrary(title, author, num_pages, read);
+
+    // Re-render the display so the new book card appears instantly
+    displayBooks();
+
+    // Reset form fields and close the modal dialog
+    bookForm.reset();
+    dialog.close();
+});
