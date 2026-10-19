@@ -32,7 +32,7 @@ addBookToLibrary("1984", "George Orwell", 328, "read");
 function displayBooks() {
     const libraryContainer = document.querySelector("#library-container");
     
-    // Clear the container first so we don't duplicate cards when re-rendering
+    // Clear the container first so we don't duplicate cards
     libraryContainer.innerHTML = "";
 
     // Loop through each book in the array
@@ -41,20 +41,41 @@ function displayBooks() {
         const bookCard = document.createElement("div");
         bookCard.classList.add("book-card");
         
-        // Store the unique ID on the DOM element for future steps (like deleting/toggling)
+        // Store the unique ID on the DOM element
         bookCard.dataset.id = book.id;
 
-        // Populate the card content using template literals
+        // Populate the card content, including a Remove button
         bookCard.innerHTML = `
             <h3>${book.title}</h3>
             <p><strong>Author:</strong> ${book.author}</p>
             <p><strong>Pages:</strong> ${book.num_pages}</p>
             <p><strong>Status:</strong> ${book.read ? "Read ✅" : "Not Read ❌"}</p>
+            <button class="remove-btn btn secondary-btn">Remove</button>
         `;
+
+        // Attach event listener directly to the remove button inside this card
+        const removeBtn = bookCard.querySelector(".remove-btn");
+        removeBtn.addEventListener("click", () => {
+            removeBookFromLibrary(book.id);
+        });
 
         // Append the card into our main grid container
         libraryContainer.appendChild(bookCard);
     });
+}
+
+// Function to remove a book from the array by its ID and re-render
+function removeBookFromLibrary(bookId) {
+    // Find the index of the book with the matching ID
+    const bookIndex = myLibrary.findIndex(book => book.id === bookId);
+    
+    if (bookIndex !== -1) {
+        // Remove the book from the array
+        myLibrary.splice(bookIndex, 1);
+        
+        // Re-render the display so the screen updates immediately
+        displayBooks();
+    }
 }
 
 // Call the function so our test books render immediately on load
