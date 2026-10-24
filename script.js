@@ -1,5 +1,30 @@
-// 1. Array to store all of your book objects
-const myLibrary = [];
+// --- Persistence Helpers ---
+const STORAGE_KEY = "MY_LIBRARY_BOOKS";
+
+// Load books from localStorage (re-instantiating them as Book class instances)
+function loadLibrary() {
+    const storedData = localStorage.getItem(STORAGE_KEY);
+    if (!storedData) {
+        // Fallback to default books if nothing in storage yet
+        return [
+            new Book("The Hobbit", "J.R.R. Tolkien", 295, false),
+            new Book("1984", "George Orwell", 328, true)
+        ];
+    }
+    
+    // Parse stored objects and recreate them as Book class instances so methods work!
+    const rawData = JSON.parse(storedData);
+    return rawData.map(bookData => {
+        const book = new Book(bookData.title, bookData.author, bookData.numPages, bookData.read);
+        book.id = bookData.id; // Keep the same unique ID
+        return book;
+    });
+}
+
+// Save current library array to localStorage
+function saveLibrary() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(myLibrary));
+}
 
 // 2. Book class (replaces the constructor function)
 class Book {
@@ -14,19 +39,19 @@ class Book {
     // Behavior now lives on the class, right next to the data it changes
     toggleRead() {
         this.read = !this.read;
+        saveLibrary(); // Save whenever read status changes!
     }
 }
 
-// 3. Create a book and push it to the array
+// 1. Array to store all of your book objects (Loaded from storage!)
+const myLibrary = loadLibrary();
+
+// 3. Create a book, push it to the array, and persist
 function addBookToLibrary(title, author, numPages, read) {
     const newBook = new Book(title, author, numPages, read);
     myLibrary.push(newBook);
+    saveLibrary(); // Save after adding
 }
-
-// Example usage (read is a real boolean now; the string "not read yet"
-// was truthy, so The Hobbit used to show up as "Read")
-addBookToLibrary("The Hobbit", "J.R.R. Tolkien", 295, false);
-addBookToLibrary("1984", "George Orwell", 328, true);
 
 // Helper: build a <p> with a bold label and a plain-text value
 function createInfoLine(label, value, className) {
@@ -80,12 +105,13 @@ function displayBooks() {
     });
 }
 
-// Remove a book from the array by its ID and re-render
+// Remove a book from the array by its ID, persist, and re-render
 function removeBookFromLibrary(bookId) {
     const bookIndex = myLibrary.findIndex((book) => book.id === bookId);
 
     if (bookIndex !== -1) {
         myLibrary.splice(bookIndex, 1);
+        saveLibrary(); // Save after removing
         displayBooks();
     }
 }
@@ -127,7 +153,6 @@ const titleInput = document.querySelector("#title");
 const authorInput = document.querySelector("#author");
 const numPagesInput = document.querySelector("#num_pages");
 
-// Custom validation messages using Constraint Validation API
 titleInput.addEventListener("input", () => {
     if (titleInput.validity.valueMissing) {
         titleInput.setCustomValidity("The book title must be filled!");
