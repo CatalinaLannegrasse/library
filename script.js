@@ -121,3 +121,35 @@ bookForm.addEventListener("submit", (e) => {
     bookForm.reset();
     dialog.close();
 });
+
+// --- Form Validation ---
+const titleInput = document.querySelector("#title");
+const authorInput = document.querySelector("#author");
+const numPagesInput = document.querySelector("#num_pages");
+
+// Custom validation messages using Constraint Validation API
+titleInput.addEventListener("input", () => {
+    if (titleInput.validity.valueMissing) {
+        titleInput.setCustomValidity("The book title must be filled!");
+    } else {
+        titleInput.setCustomValidity("");
+    }
+});
+
+authorInput.addEventListener("input", () => {
+    if (authorInput.validity.valueMissing) {
+        authorInput.setCustomValidity("The author name must be filled!");
+    } else {
+        authorInput.setCustomValidity("");
+    }
+});
+
+numPagesInput.addEventListener("input", () => {
+    if (numPagesInput.validity.valueMissing) {
+        numPagesInput.setCustomValidity("The number of pages must be filled!");
+    } else if (numPagesInput.validity.rangeUnderflow) {
+        numPagesInput.setCustomValidity("The book must have at least 1 page!");
+    } else {
+        numPagesInput.setCustomValidity("");
+    }
+});
